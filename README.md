@@ -1,8 +1,7 @@
-# FastAPI ML Template
+# FastAPI NLP server
 
-I wrote a blog post about this repository in Japanese.
-
-[機械学習の推論WebAPIの実装をテンプレート化して使い回せるようした](https://zenn.dev/yag_ays/articles/eef1a8c8e1ee39)
+TODO:
+Complete description, add model cards, etc
 
 ## Run Web API
 ### Local
