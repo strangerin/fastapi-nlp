@@ -4,9 +4,16 @@ from fastapi import APIRouter, Request
 from textdistance import hamming, levenshtein, jaro_winkler, jaccard, sorensen_dice
 
 from app.models.predict import PredictRequest, PredictResponse
-from app.services.data_classes import SimilarityRequest, SimilarityResponse
+from app.services.data_classes import SimilarityRequest, SimilarityResponse, ReviewClassificationRequest, \
+    ReviewClassificationResponse
+from app.models.model_loader import load_model_and_vectorizer
+from app.services.utils import preprocess_text
+
 
 api_router = APIRouter()
+
+# Load the trained model and vectorizer
+model, vectorizer = load_model_and_vectorizer()
 
 
 @api_router.post("/predict", response_model=PredictResponse)
@@ -51,6 +58,25 @@ async def calculate_similarity(request: SimilarityRequest) -> SimilarityResponse
     )
 
 
+@api_router.post("/classify_review", response_model=ReviewClassificationResponse)
+async def classify_review(request: ReviewClassificationRequest) -> ReviewClassificationResponse:
+    """
+    Review Classification API
+    """
+    review_text = request.review_text
+
+    # Preprocess the review text
+    preprocessed_text = preprocess_text(review_text)
+
+    # Convert text to numerical features using the loaded vectorizer
+    text_features = vectorizer.transform([preprocessed_text])
+
+    # Make predictions using the loaded model
+    prediction = model.predict(text_features)[0]
+
+    return ReviewClassificationResponse(review_text=review_text, sentiment=prediction)
+
+
 @api_router.get("/help")
 async def help_endpoint():
     """
@@ -78,7 +104,15 @@ async def help_endpoint():
          - line2: str
          - similarity: float
 
-    3. /help (GET):
+    3. /classify_review (POST):
+       - Description: Review Classification API
+       - Request Body:
+         - review_text: str (required)
+       - Response:
+         - review_text: str
+         - sentiment: int (0 for negative, 1 for positive)
+
+    4. /help (GET):
        - Description: Help Endpoint
        - Response: This help text
     """
