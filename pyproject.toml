@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "fastapi-ml-template"
+name = "fastapi-ml-nlp-api"
 version = "0.1.0"
 description = ""
-authors = ["Yuki Okuda <y.okuda@dr-ubie.com>"]
+authors = ["Rin Kijima"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -11,6 +11,9 @@ fastapi = "^0.73.0"
 pydantic = "^1.9.0"
 requests = "^2.27.1"
 textdistance = "^4.6.2"
+joblib = "^1.1.0"
+scikit-learn = "^1.0.2"
+nltk = "^3.6.7"
 
 [tool.poetry.dev-dependencies]
 ipython = "^8.0.1"

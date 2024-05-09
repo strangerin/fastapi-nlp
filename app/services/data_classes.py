@@ -9,3 +9,12 @@ class SimilarityRequest(BaseModel):
 
 class SimilarityResponse(SimilarityRequest):
     similarity: float
+
+
+class ReviewClassificationRequest(BaseModel):
+    review_text: str
+
+
+class ReviewClassificationResponse(BaseModel):
+    review_text: str
+    sentiment: int
