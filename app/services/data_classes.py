@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import List
 
 
 class SimilarityRequest(BaseModel):
@@ -18,3 +19,11 @@ class ReviewClassificationRequest(BaseModel):
 class ReviewClassificationResponse(BaseModel):
     review_text: str
     sentiment: int
+
+
+class GroupSentencesRequest(BaseModel):
+    sentences: List[str]
+
+
+class GroupSentencesResponse(BaseModel):
+    groups: List[List[str]]
