@@ -1,5 +1,6 @@
 import os
 import joblib
+from gensim.models.doc2vec import Doc2Vec
 
 
 def load_model_and_vectorizer():
@@ -12,3 +13,13 @@ def load_model_and_vectorizer():
     vectorizer = joblib.load(vectorizer_path)
 
     return model, vectorizer
+
+
+def load_doc2vec_model():
+    # Define the file path for the trained Doc2Vec model
+    doc2vec_model_path = os.path.join(os.path.dirname(__file__), 'weights', 'doc2vec_model_ag_news')
+
+    # Load the trained Doc2Vec model
+    doc2vec_model = Doc2Vec.load(doc2vec_model_path)
+
+    return doc2vec_model
