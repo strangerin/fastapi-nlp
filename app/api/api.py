@@ -14,8 +14,11 @@ from app.services.data_classes import (SimilarityRequest,
                                        GroupSentencesResponse,
                                        )
 from app.models.model_loader import load_model_and_vectorizer
-from app.services.utils import preprocess_text
+from app.services.utils import preprocess_text, load_spacy_model
 from app.models.model_loader import load_doc2vec_model
+
+# Load the spaCy model
+nlp = load_spacy_model()
 
 api_router = APIRouter()
 
@@ -73,9 +76,16 @@ async def classify_review(request: ReviewClassificationRequest) -> ReviewClassif
     Review Classification API
     """
     review_text = request.review_text
+    preprocess_method = request.preprocess_method if request.preprocess_method else "spacy"
 
-    # Preprocess the review text
-    preprocessed_text = preprocess_text(review_text)
+    # Preprocess the review text based on the selected method
+    if preprocess_method == "nltk":
+        preprocessed_text = preprocess_text(review_text)
+    elif preprocess_method == "spacy":
+        doc = nlp(review_text)
+        preprocessed_text = " ".join([token.lemma_.lower() for token in doc if not token.is_stop and token.is_alpha])
+    else:
+        raise ValueError(f"Unsupported preprocessing method: {preprocess_method}")
 
     # Convert text to numerical features using the loaded vectorizer
     text_features = vectorizer.transform([preprocessed_text])
@@ -154,6 +164,7 @@ async def help_endpoint():
        - Description: Review Classification API
        - Request Body:
          - review_text: str (required)
+         - preprocess_method: str (required, options: nltk, spacy)
        - Response:
          - review_text: str
          - sentiment: int (0 for negative, 1 for positive)
