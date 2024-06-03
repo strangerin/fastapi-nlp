@@ -14,6 +14,7 @@ class SimilarityResponse(SimilarityRequest):
 
 class ReviewClassificationRequest(BaseModel):
     review_text: str
+    preprocess_method: str
 
 
 class ReviewClassificationResponse(BaseModel):

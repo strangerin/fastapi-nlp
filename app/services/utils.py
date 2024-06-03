@@ -1,5 +1,6 @@
 import nltk
 import re
+import spacy
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer, WordNetLemmatizer
@@ -13,6 +14,16 @@ def _download_resources():
     nltk.download('stopwords')
     nltk.download('punkt')
     nltk.download('wordnet')
+
+
+def load_spacy_model(model_name="en_core_web_sm"):
+    try:
+        nlp = spacy.load(model_name)
+    except OSError:
+        print(f"Downloading spaCy model: {model_name}")
+        spacy.cli.download(model_name)
+        nlp = spacy.load(model_name)
+    return nlp
 
 
 def preprocess_text(text):
