@@ -1,6 +1,7 @@
 import nltk
 import re
 import spacy
+from spacy.lang.en import English
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer, WordNetLemmatizer
@@ -24,6 +25,27 @@ def load_spacy_model(model_name="en_core_web_sm"):
         spacy.cli.download(model_name)
         nlp = spacy.load(model_name)
     return nlp
+
+
+def preprocess_text_spacy(text, nlp):
+    # Create a spaCy pipeline
+    pipeline = [nlp.create_pipe('lowercase'), nlp.create_pipe('lemmatizer'), nlp.create_pipe('stopwords'),
+                nlp.create_pipe('punct')]
+
+    # Add the pipeline components to the spaCy pipeline
+    for pipe in pipeline:
+        nlp.add_pipe(pipe)
+
+    # Process the text using the spaCy pipeline
+    doc = nlp(text)
+
+    # Remove stopwords, punctuation, and non-alphabetic tokens
+    tokens = [token.lemma_ for token in doc if not token.is_stop and not token.is_punct and token.is_alpha]
+
+    # Join tokens back into a string
+    processed_text = ' '.join(tokens)
+
+    return processed_text
 
 
 def preprocess_text(text):
