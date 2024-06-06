@@ -14,7 +14,7 @@ from app.services.data_classes import (SimilarityRequest,
                                        GroupSentencesResponse,
                                        )
 from app.models.model_loader import load_model_and_vectorizer
-from app.services.utils import preprocess_text, load_spacy_model
+from app.services.utils import preprocess_text, load_spacy_model, preprocess_text_spacy
 from app.models.model_loader import load_doc2vec_model
 
 # Load the spaCy model
@@ -82,8 +82,7 @@ async def classify_review(request: ReviewClassificationRequest) -> ReviewClassif
     if preprocess_method == "nltk":
         preprocessed_text = preprocess_text(review_text)
     elif preprocess_method == "spacy":
-        doc = nlp(review_text)
-        preprocessed_text = " ".join([token.lemma_.lower() for token in doc if not token.is_stop and token.is_alpha])
+        preprocessed_text = preprocess_text_spacy(review_text, nlp)
     else:
         raise ValueError(f"Unsupported preprocessing method: {preprocess_method}")
 
