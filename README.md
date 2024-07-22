@@ -3,6 +3,20 @@
 TODO:
 Complete description, add model cards, etc
 
+## Available Endpoints
+
+- `/api/v1/predict`: ML Prediction API
+- `/api/v1/similarity`: Similarity Calculation API
+- `/api/v1/classify_review`: Review Classification API
+- `/api/v1/group_sentences`: Sentence Grouping API
+- `/api/v1/analyze_sentiment`: Sentiment Analysis API using a transformer model
+
+### Sentiment Analysis API
+
+```sh
+$ curl --request POST --url http://127.0.0.1:9000/api/v1/analyze_sentiment --header 'Content-Type: application/json' --data '{"text": "I love this product!"}'
+
+
 ## Run Web API
 ### Local
 

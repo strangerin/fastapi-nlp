@@ -4,7 +4,6 @@ from fastapi import APIRouter, Request
 from textdistance import hamming, levenshtein, jaro_winkler, jaccard, sorensen_dice
 from sklearn.metrics.pairwise import cosine_similarity
 
-
 from app.models.predict import PredictRequest, PredictResponse
 from app.services.data_classes import (SimilarityRequest,
                                        SimilarityResponse,
@@ -12,10 +11,13 @@ from app.services.data_classes import (SimilarityRequest,
                                        ReviewClassificationResponse,
                                        GroupSentencesRequest,
                                        GroupSentencesResponse,
+                                       SentimentAnalysisRequest,
+                                       SentimentAnalysisResponse
                                        )
 from app.models.model_loader import load_model_and_vectorizer
 from app.services.utils import preprocess_text, load_spacy_model, preprocess_text_spacy
 from app.models.model_loader import load_doc2vec_model
+from transformers import pipeline
 
 # Load the spaCy model
 nlp = load_spacy_model()
@@ -26,6 +28,23 @@ api_router = APIRouter()
 model, vectorizer = load_model_and_vectorizer()
 # Load the doc2vec model
 doc2vec_model = load_doc2vec_model()
+# Load the sentiment analysis pipeline
+sentiment_pipeline = pipeline("sentiment-analysis")
+
+
+@api_router.post("/analyze_sentiment", response_model=SentimentAnalysisResponse)
+async def analyze_sentiment(request: SentimentAnalysisRequest) -> SentimentAnalysisResponse:
+    """
+    Sentiment Analysis API using a transformer model
+    """
+    text = request.text
+    result = sentiment_pipeline(text)[0]
+
+    return SentimentAnalysisResponse(
+        text=text,
+        label=result['label'],
+        score=result['score']
+    )
 
 
 @api_router.post("/predict", response_model=PredictResponse)
@@ -178,5 +197,14 @@ async def help_endpoint():
          - sentences: List[str] (required)
        - Response:
          - groups: List[List[str]]
+         
+    6. /analyze_sentiment (POST):
+       - Description: Sentiment Analysis API using a transformer model
+       - Request Body:
+         - text: str (required)
+       - Response:
+         - text: str
+         - label: str
+         - score: float
     """
     return help_text

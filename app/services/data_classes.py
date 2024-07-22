@@ -28,3 +28,13 @@ class GroupSentencesRequest(BaseModel):
 
 class GroupSentencesResponse(BaseModel):
     groups: List[List[str]]
+
+
+class SentimentAnalysisRequest(BaseModel):
+    text: str
+
+
+class SentimentAnalysisResponse(BaseModel):
+    text: str
+    label: str
+    score: float
